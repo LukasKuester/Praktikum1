@@ -7,6 +7,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class BahnhoefeModel {
+	
+	private Bahnhof bahnhof;
+
+	public Bahnhof getBahnhof() {
+		return bahnhof;
+	}
+
+	public void setBahnhof(Bahnhof bahnhof) {
+		this.bahnhof = bahnhof;
+	}
 
 	public String[] lese() throws IOException {
 		BufferedReader ein = new BufferedReader(new FileReader("Bahnhof.csv"));

@@ -19,11 +19,11 @@ public class BahnhoefeControl {
 
 	private BahnhoefeModel model;
 	private BahnhoefeView view;
-	private Bahnhof bahnhof;
+	//private Bahnhof bahnhof;
 	
 	public void nehmeBahnhofAuf(String name, String ort,int anzGleise,int letzteRenovierung, String[] zugarten ) {
 		try{ 
-    		this.bahnhof = new Bahnhof(name, ort, anzGleise, letzteRenovierung,zugarten);
+    		model.setBahnhof( new Bahnhof(name, ort, anzGleise, letzteRenovierung,zugarten));
     		view.zeigeInformationsfensterAn("Der Bahnhof wurde aufgenommen!");
        	}
        	catch(Exception exc){
@@ -33,9 +33,9 @@ public class BahnhoefeControl {
 	}
 
 	public void zeigeBahnhoefeAn() {
-		if(this.bahnhof != null){
+		if(model.getBahnhof() != null){
     		view.setText(
-    			this.bahnhof.gibBahnhofZurueck(' '));
+    			model.getBahnhof().gibBahnhofZurueck(' '));
     	}
     	else{
     		view.zeigeInformationsfensterAn("Bisher wurde keine Bahnhof aufgenommen!");
@@ -49,11 +49,11 @@ public class BahnhoefeControl {
       		if("csv".equals(typ)){
       			String[] zeile = model.lese();
       			
-      			this.bahnhof = new Bahnhof(zeile[0], 
+      			model.setBahnhof(new Bahnhof(zeile[0], 
       				zeile[1], 
       				Integer.parseInt(zeile[2]), 
       				Integer.parseInt(zeile[3]), 
-      				zeile[4].split("_"));
+      				zeile[4].split("_")));
       	  			view.zeigeInformationsfensterAn(
       	  	   			"Der Bahnhof wurde gelesen!");
       		}
@@ -76,7 +76,7 @@ public class BahnhoefeControl {
 
 	public void schreibeBahnhoefeInCsvDatei() {
 		try {
-			model.schreibe(bahnhof.gibBahnhofZurueck(';'));
+			model.schreibe(model.getBahnhof().gibBahnhofZurueck(';'));
 			
    			view.zeigeInformationsfensterAn(
 	   			"Die Bahnhoefe wurden gespeichert!");
