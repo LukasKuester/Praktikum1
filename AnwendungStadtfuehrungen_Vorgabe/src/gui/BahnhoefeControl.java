@@ -46,21 +46,7 @@ public class BahnhoefeControl {
 
 	public void leseAusDatei(String typ) {
 		try {
-      		if("csv".equals(typ)){
-      			String[] zeile = model.lese();
-      			
-      			model.setBahnhof(new Bahnhof(zeile[0], 
-      				zeile[1], 
-      				Integer.parseInt(zeile[2]), 
-      				Integer.parseInt(zeile[3]), 
-      				zeile[4].split("_")));
-      	  			view.zeigeInformationsfensterAn(
-      	  	   			"Der Bahnhof wurde gelesen!");
-      		}
-       		else{
-	   			view.zeigeInformationsfensterAn(
-	   				"Noch nicht implementiert!");
-	   		}
+      		model.lese(typ);
 		}
 		catch(IOException exc){
 			view.zeigeFehlermeldungsfensterAn(
