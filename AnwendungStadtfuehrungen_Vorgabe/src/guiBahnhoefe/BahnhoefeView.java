@@ -1,24 +1,41 @@
-package gui;
-   
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+package guiBahnhoefe;
 
-import business.Bahnhof;
-import javafx.event.*;
+import business.BahnhoefeModel;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import ownUtil.*;
+import ownUtil.MeldungsfensterAnzeiger;
 
-public class BahnhoefeAnwendungssystem {
-	  
-    //---Anfang Attribute der grafischen Oberflaeche---
+public class BahnhoefeView {
+
+	public BahnhoefeView(Stage primaryStage,BahnhoefeModel model,BahnhoefeControl control) {
+		
+		this.control= control;
+		this.model= model;
+		Scene scene = new Scene(this.pane, 700, 340);
+    	primaryStage.setScene(scene);
+    	primaryStage.setTitle("Verwaltung von Bahnhoefen");
+    	primaryStage.show();
+    	this.initKomponenten();
+		this.initListener();
+	}
+
+	BahnhoefeControl control;
+	BahnhoefeModel model;
+	
+	 //---Anfang Attribute der grafischen Oberflaeche---
     private Pane pane     					= new  Pane();
     private Label lblEingabe    	 		= new Label("Eingabe");
     private Label lblAnzeige   	 	    	= new Label("Anzeige");
@@ -41,20 +58,8 @@ public class BahnhoefeAnwendungssystem {
     private MenuItem mnItmTxtImport 		= new MenuItem("txt-Import");
     private MenuItem mnItmCsvExport 		= new MenuItem("csv-Export");    
     //-------Ende Attribute der grafischen Oberflaeche-------
-    
-    // speichert temporaer ein Objekt vom Typ Bahnhof
-    private Bahnhof bahnhof;
-    
-    public BahnhoefeAnwendungssystem(Stage primaryStage){
-    	Scene scene = new Scene(this.pane, 700, 340);
-    	primaryStage.setScene(scene);
-    	primaryStage.setTitle("Verwaltung von Bahnhoefen");
-    	primaryStage.show();
-    	this.initKomponenten();
-		this.initListener();
-    }
-    
-    private void initKomponenten(){
+	
+	private void initKomponenten(){
        	// Labels
     	lblEingabe.setLayoutX(20);
     	lblEingabe.setLayoutY(40);
@@ -127,116 +132,52 @@ public class BahnhoefeAnwendungssystem {
 	    btnEingabe.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-        	    nehmeBahnhofAuf();
+        	    control.nehmeBahnhofAuf(txtName.getText(), 
+           	            txtOrt.getText(),
+           	            Integer.parseInt(txtAnzahlGleise.getText()),
+           	        	Integer.parseInt(txtLetzteRenovierung.getText()),
+            		    txtZugarten.getText().split(";"));
             }
 	    });
 	    btnAnzeige.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 	        public void handle(ActionEvent e) {
-	            zeigeBahnhoefeAn();
+	            control.zeigeBahnhoefeAn();
 	        } 
    	    });
 	    mnItmCsvImport.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 	        public void handle(ActionEvent e) {
-	       	 	leseAusDatei("csv");
+	       	 	control.leseAusDatei("csv");
 	    	}
 	    });
 	    mnItmTxtImport.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent e) {
-		     	leseAusDatei("txt");
+		     	control.leseAusDatei("txt");
 		    }
     	});
 	    mnItmCsvExport.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				schreibeBahnhoefeInCsvDatei();
+				control.schreibeBahnhoefeInCsvDatei();
 			}	
 	    });
     }
-    
-    private void nehmeBahnhofAuf(){
-    	try{ 
-    		this.bahnhof = new Bahnhof(
-    			txtName.getText(), 
-   	            txtOrt.getText(),
-   	            Integer.parseInt(txtAnzahlGleise.getText()),
-   	        	Integer.parseInt(txtLetzteRenovierung.getText()),
-    		    txtZugarten.getText().split(";"));
-    		zeigeInformationsfensterAn("Der Bahnhof wurde aufgenommen!");
-       	}
-       	catch(Exception exc){
-       		zeigeFehlermeldungsfensterAn(exc.getMessage());
-     	}
-    }
+
+   public void zeigeInformationsfensterAn(String meldung){
+   	new MeldungsfensterAnzeiger(AlertType.INFORMATION,
+   		"Information", meldung).zeigeMeldungsfensterAn();
+   }	
    
-    private void zeigeBahnhoefeAn(){
-    	if(this.bahnhof != null){
-    		txtAnzeige.setText(
-    			this.bahnhof.gibBahnhofZurueck(' '));
-    	}
-    	else{
-    		zeigeInformationsfensterAn("Bisher wurde keine Bahnhof aufgenommen!");
-    	}
-    }    
-		  
-    private void leseAusDatei(String typ){
-    	try {
-      		if("csv".equals(typ)){
-      			BufferedReader ein = new BufferedReader(new FileReader("Bahnhof.csv"));
-      			String[] zeile = ein.readLine().split(";");
-      			this.bahnhof = new Bahnhof(zeile[0], 
-      				zeile[1], 
-      				Integer.parseInt(zeile[2]), 
-      				Integer.parseInt(zeile[3]), 
-      				zeile[4].split("_"));
-      				ein.close();
-      	  			zeigeInformationsfensterAn(
-      	  	   			"Der Bahnhof wurde gelesen!");
-      		}
-       		else{
-	   			zeigeInformationsfensterAn(
-	   				"Noch nicht implementiert!");
-	   		}
-		}
-		catch(IOException exc){
-			zeigeFehlermeldungsfensterAn(
-				"IOException beim Lesen!");
-		}
-		catch(Exception exc){
-			zeigeFehlermeldungsfensterAn(
-				"Unbekannter Fehler beim Lesen!");
-		}
-	}
-		
-	private void schreibeBahnhoefeInCsvDatei() {
-		try {
-			BufferedWriter aus 
-				= new BufferedWriter(new FileWriter("BahnhoefeAusgabe.csv", true));
-			aus.write(bahnhof.gibBahnhofZurueck(';'));
-			aus.close();
-   			zeigeInformationsfensterAn(
-	   			"Die Bahnhoefe wurden gespeichert!");
-		}	
-		catch(IOException exc){
-			zeigeFehlermeldungsfensterAn(
-				"IOException beim Speichern!");
-		}
-		catch(Exception exc){
-			zeigeFehlermeldungsfensterAn(
-				"Unbekannter Fehler beim Speichern!");
-		}
-	}
+   public void zeigeFehlermeldungsfensterAn(String meldung){
+      	new MeldungsfensterAnzeiger(AlertType.ERROR,
+       	"Fehler", meldung).zeigeMeldungsfensterAn();
+   }
 
-    private void zeigeInformationsfensterAn(String meldung){
-    	new MeldungsfensterAnzeiger(AlertType.INFORMATION,
-    		"Information", meldung).zeigeMeldungsfensterAn();
-    }	
-    
-    void zeigeFehlermeldungsfensterAn(String meldung){
-       	new MeldungsfensterAnzeiger(AlertType.ERROR,
-        	"Fehler", meldung).zeigeMeldungsfensterAn();
-    }
 
+public void setText(String gibBahnhofZurueck) {
+	txtAnzeige.setText(gibBahnhofZurueck);
+	
+}
 }

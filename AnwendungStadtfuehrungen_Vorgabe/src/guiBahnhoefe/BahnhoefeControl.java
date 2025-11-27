@@ -1,4 +1,4 @@
-package gui;
+package guiBahnhoefe;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,14 +9,17 @@ import java.io.IOException;
 import business.BahnhoefeModel;
 import business.Bahnhof;
 import javafx.stage.Stage;
+import ownUtil.Observer;
 
-public class BahnhoefeControl {
+public class BahnhoefeControl implements Observer{
 
 	public BahnhoefeControl(Stage primaryStage) {
-		this.model = new BahnhoefeModel();
+		this.model =  BahnhoefeModel.getInstance();
 		this.view = new BahnhoefeView(primaryStage,model,this);
+		model.addObserver(this);
 	}
 
+	
 	private BahnhoefeModel model;
 	private BahnhoefeView view;
 	//private Bahnhof bahnhof;
@@ -75,6 +78,12 @@ public class BahnhoefeControl {
 			view.zeigeFehlermeldungsfensterAn(
 				"Unbekannter Fehler beim Speichern!");
 		}
+		
+	}
+
+	@Override
+	public void update() {
+		zeigeBahnhoefeAn();
 		
 	}
 	
