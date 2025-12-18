@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import fileCreatorsKuester.ConcreteReaderCreator;
@@ -15,14 +16,15 @@ import ownUtil.Observer;
 
 public class BahnhoefeModel implements Observable{
 	
-	private Bahnhof bahnhof;
+	private ArrayList<Bahnhof> bahnhoefe=new ArrayList<>();
 
-	public Bahnhof getBahnhof() {
-		return bahnhof;
+	public ArrayList<Bahnhof> getBahnhof() {
+		return bahnhoefe;
 	}
 
-	public void setBahnhof(Bahnhof bahnhof) {
-		this.bahnhof = bahnhof;
+	public void addBahnhof(Bahnhof bahnhof) {
+		bahnhoefe.add(bahnhof);
+		//Testfall:Dortmund oespel Dortmund 2 1993 rb s
 		notifyObservers();
 	}
 	//lese aus csv/txt datei methode
@@ -31,9 +33,9 @@ public class BahnhoefeModel implements Observable{
 		ReaderProductKuester reader= creator.factoryMethod(typ);
 		
 		String[] zeile = reader.leseAusDatei();
-		this.bahnhof = new Bahnhof(zeile[0],zeile[1],Integer.parseInt(zeile[2]),Integer.parseInt(zeile[3]),zeile[4].split("_"));
+		bahnhoefe.add(new Bahnhof(zeile[0],zeile[1],Integer.parseInt(zeile[2]),Integer.parseInt(zeile[3]),zeile[4].split("_")));
 		reader.schliesseDatei();
-		//notifyObservers();
+		notifyObservers();
 		
 	}
 	

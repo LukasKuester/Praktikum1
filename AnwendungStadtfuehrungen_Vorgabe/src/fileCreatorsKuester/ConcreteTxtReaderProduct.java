@@ -8,7 +8,7 @@ public class ConcreteTxtReaderProduct extends ReaderProductKuester {
 	BufferedReader ein;
 	@Override
 	public String[] leseAusDatei() throws IOException {
-		ein = new BufferedReader(new FileReader("Bahnhof.csv"));
+		ein = new BufferedReader(new FileReader("Bahnhof.txt"));
 		String[] ergebnisZeile=new String[5];
 		String zeile = ein.readLine();
 		int i=0;

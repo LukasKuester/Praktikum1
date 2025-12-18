@@ -129,40 +129,25 @@ public class BahnhoefeView {
    }
    
    private void initListener() {
-	    btnEingabe.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
+	    btnEingabe.setOnAction(e-> {
         	    control.nehmeBahnhofAuf(txtName.getText(), 
            	            txtOrt.getText(),
            	            Integer.parseInt(txtAnzahlGleise.getText()),
            	        	Integer.parseInt(txtLetzteRenovierung.getText()),
             		    txtZugarten.getText().split(";"));
-            }
-	    });
-	    btnAnzeige.setOnAction(new EventHandler<ActionEvent>() {
-	    	@Override
-	        public void handle(ActionEvent e) {
-	            control.zeigeBahnhoefeAn();
-	        } 
-   	    });
-	    mnItmCsvImport.setOnAction(new EventHandler<ActionEvent>() {
-	    	@Override
-	        public void handle(ActionEvent e) {
-	       	 	control.leseAusDatei("csv");
-	    	}
-	    });
-	    mnItmTxtImport.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent e) {
-		     	control.leseAusDatei("txt");
-		    }
-    	});
-	    mnItmCsvExport.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				control.schreibeBahnhoefeInCsvDatei();
-			}	
-	    });
+            });
+	    btnAnzeige.setOnAction(e->
+	            control.zeigeBahnhoefeAn());
+	    
+	    mnItmCsvImport.setOnAction(e->
+	       	 	control.leseAusDatei("csv"));
+	    	
+	    mnItmTxtImport.setOnAction(e->
+		     	control.leseAusDatei("txt"));
+		   
+	    mnItmCsvExport.setOnAction(e->
+				control.schreibeBahnhoefeInCsvDatei());
+			
     }
 
    public void zeigeInformationsfensterAn(String meldung){

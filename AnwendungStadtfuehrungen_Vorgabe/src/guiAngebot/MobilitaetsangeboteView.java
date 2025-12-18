@@ -1,6 +1,7 @@
 package guiAngebot;
 
 import business.BahnhoefeModel;
+import business.Bahnhof;
 import javafx.event.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -71,10 +72,12 @@ private BahnhoefeModel bahnhoefeModel;
     }
    
     public void zeigeBahnhoefeAn(){
-    		if(bahnhoefeModel.getBahnhof() != null){
-    			txtAnzeigeBahnhoefe.setText(
-    				bahnhoefeModel.getBahnhof()
- 				.gibBahnhofZurueck(' '));
+    	if(bahnhoefeModel.getBahnhof().size()>0){
+			StringBuffer  text = new StringBuffer();
+			for(Bahnhof bahnhof:bahnhoefeModel.getBahnhof()) {
+				text.append(bahnhof.gibBahnhofZurueck(' '));
+			}
+			txtAnzeigeBahnhoefe.setText(text.toString());
     		}
     		else{
     			zeigeInformationsfensterAn(

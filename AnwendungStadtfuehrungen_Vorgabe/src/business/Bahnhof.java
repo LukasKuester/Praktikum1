@@ -10,6 +10,9 @@ public class Bahnhof {
     
     public Bahnhof(String name, String ort, int anzahlGleise,
        	int letzteRenovierung, String[] zugarten){
+    	if(name==null||ort==null||zugarten==null) {
+    		throw(new IllegalArgumentException());
+    	}
     	this.name = name;
       	this.ort = ort;
        	this.anzahlGleise = anzahlGleise;
